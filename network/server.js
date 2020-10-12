@@ -2,7 +2,7 @@ const express = require('express');
 const Boom = require('@hapi/boom');
 const middlewares = require('../middlewares/app.middleware');
 const api = require('../src/router');
-const logger = require('../middlewares/logger');
+// const logger = require('../middlewares/logger');
 
 const app = express();
 
