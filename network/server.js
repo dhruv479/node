@@ -2,8 +2,7 @@ const express = require('express');
 const Boom = require('@hapi/boom');
 const middlewares = require('../middlewares/app.middleware');
 const api = require('../src/router');
-const logger = require('../middlewares/logger');
-
+const { isDev } = require('../config/keys');
 const app = express();
 
 middlewares(express, app);
@@ -19,7 +18,7 @@ app.use((_, res, next) => {
 // eslint-disable-next-line no-unused-vars
 app.use((error, req, res, _) => {
   const { message = 'Oops! Something went wrong', isBoom, output } = error;
-
+  if (isDev) console.log(error);
   if (isBoom) {
     return res.status(output.statusCode).json({
       message,
