@@ -1,10 +1,10 @@
-const UserModel = require('./user.model');
+const { UserModel } = require('./user.model');
 const { createToken } = require('../utils/token');
 const { compareHash, generateHash } = require('../utils/Pasword');
 const Boom = require('@hapi/boom');
 
 // ---------------------   REGISTER CONTROLLER    ----------------------------
-const register = async (req, res, next) => {
+const registerUserController = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
@@ -31,12 +31,12 @@ const register = async (req, res, next) => {
 };
 
 // ----------------------------   LOGIN CONTROLLER    ----------------------------
-const login = async (req, res, next) => {
+const loginUserController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const userExist = await UserModel.findOne({
       email,
-    });
+    }).lean();
 
     if (!userExist) {
       throw Boom.unauthorized("User doesn't exist");
@@ -51,6 +51,7 @@ const login = async (req, res, next) => {
       id: userExist._id,
       name: userExist.name,
       email: userExist.email,
+      type: userExist.type,
     };
 
     const token = await createToken(payload);
@@ -69,7 +70,18 @@ const login = async (req, res, next) => {
   }
 };
 
+const userListController = async (req, res, next) => {
+  try {
+    const userList = await UserModel.find().select({ password: 0 }).lean();
+
+    return res.json({ success: true, data: userList });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
-  login,
-  register,
+  loginUserController,
+  registerUserController,
+  userListController,
 };

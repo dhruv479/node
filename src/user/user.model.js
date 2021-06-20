@@ -1,6 +1,11 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
-const UserModel = new Schema(
+const UserTypes = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+};
+
+const UserSchema = new Schema(
   {
     name: {
       type: String,
@@ -19,6 +24,13 @@ const UserModel = new Schema(
       required: true,
       minlength: 10,
     },
+
+    type: {
+      type: String,
+      required: true,
+      enum: Object.values(UserTypes),
+      default: UserTypes.USER,
+    },
   },
   {
     minimize: true,
@@ -26,4 +38,6 @@ const UserModel = new Schema(
   }
 );
 
-module.exports = model("user", UserModel);
+const UserModel = model('user', UserSchema);
+
+module.exports = { UserModel, UserTypes };

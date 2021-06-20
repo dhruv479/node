@@ -1,8 +1,10 @@
+const { verifyUser } = require('../utils/token');
+const { userListController } = require('./user.controller');
+const { UserTypes } = require('./user.model');
+
 const router = require('express').Router();
 
-const { register, login } = require('./user.controller');
-
-router.post('/register', register);
-router.post('/login', login);
+// allowing only admin user for operation
+router.get('/list', verifyUser([UserTypes.ADMIN]), userListController);
 
 module.exports = router;
